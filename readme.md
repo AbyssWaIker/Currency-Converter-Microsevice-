@@ -27,7 +27,7 @@ Install it through your package manager or grab [binaries](https://wiki.openssl.
 ### Mac OS X
 >brew install openssl
 
-##Configuration
+## Configuration
 1. Handle dependencies
 2. >git clone (this repository)
 3. >cd (name of directory)
