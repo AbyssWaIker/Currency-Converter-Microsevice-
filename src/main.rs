@@ -20,7 +20,7 @@ async fn get_all_currencies() -> HttpResponse {
 
     if exchange_rates.is_err() {
         return HttpResponse::Ok()
-            .json(ErrorResponse::construct(String("failed to load exchange rates")))
+            .json(ErrorResponse::construct("failed to load exchange rates".into_string()))
     }
 
     let currencies: Box<[CurrencyType]> = exchange_rates.unwrap().rates.into_keys().collect();
