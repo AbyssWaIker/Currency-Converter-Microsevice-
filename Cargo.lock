@@ -784,18 +784,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hello-world"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "confy",
- "curl",
- "serde",
- "serde_json",
- "strum_macros",
-]
-
-[[package]]
 name = "hermit-abi"
 version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -979,6 +967,18 @@ name = "memchr"
 version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "308cc39be01b73d0d18f82a0e7b2a3df85245f84af96fdddc5d202d27e47b86a"
+
+[[package]]
+name = "microservice-converter"
+version = "0.8.0"
+dependencies = [
+ "actix-web",
+ "confy",
+ "curl",
+ "serde",
+ "serde_json",
+ "strum_macros",
+]
 
 [[package]]
 name = "mime"

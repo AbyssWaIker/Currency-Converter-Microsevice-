@@ -56,10 +56,10 @@ impl CurrenciesResponse {
 
 
 impl ErrorResponse {
-    pub fn construct(error: String) -> ErrorResponse {
+    pub fn construct(error: &str) -> ErrorResponse {
         ErrorResponse {
             status: false,
-            error,
+            error: error.to_string(),
         }
     }
 }
@@ -97,15 +97,15 @@ impl ExchangeRates {
     pub fn convert(&self, r: ConversionRequest) -> Response {
         if self.check_if_currency_exists(r.from.clone()).not() {
             let error = format!("Wrong currency provided {}", r.from);
-            return Response::Err(ErrorResponse::construct(error));
+            return Response::Err(ErrorResponse::construct(error.as_str()));
         }
         if self.check_if_currency_exists(r.to.clone()).not() {
             let error = format!("Wrong currency provided {}", r.to);
-            return Response::Err(ErrorResponse::construct(error));
+            return Response::Err(ErrorResponse::construct(error.as_str()));
         }
         if self.rates.keys().count().eq(&0) {
             let error_msg = "Wrong currency provided";
-            return Response::Err(ErrorResponse::construct(error_msg.to_string()));
+            return Response::Err(ErrorResponse::construct(error_msg));
         }
 
         if r.to == r.from {

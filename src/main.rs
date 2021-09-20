@@ -20,7 +20,7 @@ async fn get_all_currencies() -> HttpResponse {
 
     if exchange_rates.is_err() {
         return HttpResponse::Ok()
-            .json(ErrorResponse::construct("failed to load exchange rates".into_string()))
+            .json(ErrorResponse::construct("failed to load exchange rates"))
     }
 
     let currencies: Box<[CurrencyType]> = exchange_rates.unwrap().rates.into_keys().collect();
@@ -33,7 +33,7 @@ async fn convert(request: web::Json<ConversionRequest>) -> HttpResponse {
     let exchange_rates: Result<ExchangeRates, ConfyError> = confy::load_path(EXCHANGE_RATES_PATH);
     if exchange_rates.is_err() {
         return HttpResponse::Ok()
-            .json(ErrorResponse::construct("failed to load exchange rates".to_string()))
+            .json(ErrorResponse::construct("failed to load exchange rates"))
     }
     let result = exchange_rates.unwrap().convert(request.into_inner());
     let response = match result {
