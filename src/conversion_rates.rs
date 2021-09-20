@@ -77,7 +77,9 @@ pub fn update_rates_toml(api_key: &str, path_to_toml:  & str) {
             panic!("{:?}",er);
             // return Ok(0)
         }
-        confy::store_path(path_to_toml_for_closure.to_owned(), er.unwrap()).unwrap();
+        let mut er = er.unwrap();
+        er.rates.insert(er.base.clone(), 1.0);
+        confy::store_path(path_to_toml_for_closure.to_owned(), er).unwrap();
         Ok(data.len())
     })
         .unwrap();
