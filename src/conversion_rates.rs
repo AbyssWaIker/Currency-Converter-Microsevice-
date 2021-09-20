@@ -1,10 +1,7 @@
-use curl::easy::{Easy, WriteError};
-use std::collections::hash_map::Keys;
+use curl::easy::{Easy};
 use std::ops::Not;
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
-use std::iter::FromIterator;
-use curl::Error;
 
 pub type Currency = f64;
 pub type CurrencyType = String;
@@ -18,10 +15,10 @@ pub struct ExchangeRates {
     pub rates: Rates,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize)]
 pub struct ConversionRequest {
-    pub current: CurrencyType,
-    pub target: CurrencyType,
+    pub from: CurrencyType,
+    pub to: CurrencyType,
     pub sum: Currency,
 }
 
@@ -74,11 +71,11 @@ pub fn update_rates_toml(api_key: &str, path_to_toml:  & str) {
     let mut easy = Easy::new();
     easy.url(&final_url).unwrap();
     easy.write_function(move |data| {
-        let a = String::from_utf8(data.to_vec());
+        // let a = String::from_utf8(data.to_vec());
         let er: serde_json::error::Result<ExchangeRates> = serde_json::from_slice(data);
         if er.is_err() {
-            panic!(er);
-            return Ok(0)
+            panic!("{:?}",er);
+            // return Ok(0)
         }
         confy::store_path(path_to_toml_for_closure.to_owned(), er.unwrap()).unwrap();
         Ok(data.len())
@@ -90,20 +87,20 @@ impl ::std::default::Default for ExchangeRates {
     fn default() -> Self { Self { base: "USD".to_string(), rates: Rates::new() } }
 }
 impl ExchangeRates {
-    pub fn get_all_currencies(&self) -> Keys<'_, CurrencyType, ExchangeRate> {
-        self.rates.keys().clone()
-    }
+    // pub fn get_all_currencies(&self) -> Box<[CurrencyType]> {
+    //     self.rates.into_keys().collect()
+    // }
     pub fn check_if_currency_exists(&self, c: CurrencyType) -> bool {
         self.base.eq(&c) || self.rates.contains_key(&c)
     }
 
     pub fn convert(&self, r: ConversionRequest) -> Response {
-        if self.check_if_currency_exists(r.current.clone()).not() {
-            let error = format!("Wrong currency provided {}", r.current);
+        if self.check_if_currency_exists(r.from.clone()).not() {
+            let error = format!("Wrong currency provided {}", r.from);
             return Response::Err(ErrorResponse::construct(error));
         }
-        if self.check_if_currency_exists(r.target.clone()).not() {
-            let error = format!("Wrong currency provided {}", r.target);
+        if self.check_if_currency_exists(r.to.clone()).not() {
+            let error = format!("Wrong currency provided {}", r.to);
             return Response::Err(ErrorResponse::construct(error));
         }
         if self.rates.keys().count().eq(&0) {
@@ -111,22 +108,22 @@ impl ExchangeRates {
             return Response::Err(ErrorResponse::construct(error_msg.to_string()));
         }
 
-        if r.target == r.current {
+        if r.to == r.from {
             return Response::Ok(SuccessfulResponse::construct(r.sum));
         }
 
-        if self.base.eq(&r.current) {
-            let result = self.convert_from_base(r.sum, r.target);
+        if self.base.eq(&r.from) {
+            let result = self.convert_from_base(r.sum, r.to);
             return Response::Ok(SuccessfulResponse::construct(result));
         }
 
-        if self.base.eq(&r.target) {
-            let result = self.convert_to_base(r.sum, r.current);
+        if self.base.eq(&r.to) {
+            let result = self.convert_to_base(r.sum, r.from);
             return Response::Ok(SuccessfulResponse::construct(result));
         }
 
-        let sum_in_base_currency = self.convert_to_base(r.sum, r.current);
-        let result = self.convert_from_base(sum_in_base_currency, r.target);
+        let sum_in_base_currency = self.convert_to_base(r.sum, r.from);
+        let result = self.convert_from_base(sum_in_base_currency, r.to);
 
         return Response::Ok(SuccessfulResponse::construct(result));
     }
