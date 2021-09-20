@@ -20,7 +20,7 @@ Install it through your package manager or grab [binaries](https://wiki.openssl.
 
 ### Ubuntu/Mint/Zorin
 >sudo apt-get install libssl-dev
-### Fedora
+### Fedora/Red Hat/Cent OS
 >sudo dnf install openssl-devel
 ### Arch/Manjaro/Endeavor OS
 >sudo pacman -S openssl
