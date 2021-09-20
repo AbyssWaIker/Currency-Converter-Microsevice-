@@ -1,5 +1,5 @@
 [package]
-name = "converter (web-)micro service"
+name = "microservice-converter"
 version = "0.8.0"
 edition = "2021"
 
