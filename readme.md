@@ -38,6 +38,6 @@ Install it through your package manager or grab [binaries](https://wiki.openssl.
 8. >cargo build && cargo run
 
 # How to use it?
-- To convert money send post request to localhost:3000/convert with request like
+- To convert money send a post request to localhost:3000/convert with request like
   - >{ "from":"USD", "to":"UAH", "sum":1.0 }
 - To get list of currencies in correct format open localhost:3000 (or send a get request there)
