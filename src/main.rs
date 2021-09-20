@@ -5,7 +5,8 @@ use std::{
     time::{Duration},
 };
 
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, error};
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, error, http};
+use actix_cors::Cors;
 use crate::conversion_rates::{ErrorResponse, ConversionRequest, ExchangeRates, update_rates_toml, CurrenciesResponse, CurrencyType};
 use crate::config::MyConfig;
 use confy::ConfyError;
@@ -20,7 +21,9 @@ async fn get_all_currencies() -> HttpResponse {
 
     if exchange_rates.is_err() {
         return HttpResponse::Ok()
+            .header("Access-Control-Allow-Origin","[*]")
             .json(ErrorResponse::construct("failed to load exchange rates"))
+
     }
 
     let currencies: Box<[CurrencyType]> = exchange_rates.unwrap().rates.into_keys().collect();
@@ -67,7 +70,14 @@ async fn main() -> std::io::Result<()> {
     let url = format!("{}:{}",conf.host,conf.port);
     println!("server is starting at http://{}", url);
     HttpServer::new(|| {
+        let cors = Cors::default()
+            .allow_any_method()
+            .allow_any_origin()
+            .allow_any_header()
+            .max_age(3600);
+
         App::new()
+            .wrap(cors)
             .service(get_all_currencies)
             .service(convert)
             .app_data(web::JsonConfig::default().error_handler(|err, _req| {
