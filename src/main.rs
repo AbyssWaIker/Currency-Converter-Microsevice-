@@ -24,7 +24,6 @@ async fn get_all_currencies() -> HttpResponse {
     }
 
     let currencies: Box<[CurrencyType]> = exchange_rates.unwrap().rates.into_keys().collect();
-    let currencies: Box<[CurrencyType]> = [[exchange_rates.unwrap().base], currencies.into()].concat();
     HttpResponse::Ok().json(CurrenciesResponse::construct(currencies))
 }
 
