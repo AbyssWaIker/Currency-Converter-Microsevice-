@@ -29,8 +29,8 @@ Install it through your package manager or grab [binaries](https://wiki.openssl.
 
 ## Configuration
 1. Handle dependencies
-2. >git clone (this repository)
-3. >cd (name of directory)
+2. >git clone https://github.com/AbyssWaIker/microservice-converter
+3. >cd microservice-converter
 4. >cp config.example.toml config.toml
 5. Sign Up to [OpenExchangeRates.org](https://openexchangerates.org/) and get a (free) api key.
 6. Place it inside config.toml file
