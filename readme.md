@@ -12,7 +12,7 @@ It uses curl to make requests to [OpenExchangeRates.org](https://openexchangerat
 ## Dependecies
 First things first. To even compile any rust project you need [rust toolchain](https://www.rust-lang.org/learn/get-started) (Whatever instruction I put here won't be as up-to-date and fitting your use case as official ones). 
 
-Also the curl crate require openssl development libraries
+Also the *curl* crate require openssl development libraries
 
 Install it through your package manager or grab [binaries](https://wiki.openssl.org/index.php/Binaries)
 
