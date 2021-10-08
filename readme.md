@@ -10,7 +10,7 @@ It uses curl to make requests to [OpenExchangeRates.org](https://openexchangerat
 # What is required?
 
 ## Dependecies
-First things first. To even compile any rust project you need [rust toolchain](https://www.rust-lang.org/learn/get-started) (Whatever instruction I put here won't be as up-to-date and fit to any use case as official ones). 
+First things first. To even compile any rust project you need [rust toolchain](https://www.rust-lang.org/learn/get-started) (Whatever instruction I put here won't be as up-to-date and fitting your use case as official ones). 
 
 Also the curl crate require openssl development libraries
 
