@@ -47,6 +47,13 @@ async fn convert(request: web::Json<ConversionRequest>) -> HttpResponse {
     response
 }
 
+#[post("/update")]
+async fn update() -> HttpResponse {
+    let conf : MyConfig = confy::load_path(CONFIG_PATH).unwrap();
+    update_rates_toml(&conf.api_key,EXCHANGE_RATES_PATH);
+    HttpResponse::Ok().json(serde_json::json!(r#"{status:true,message:"update successful"})"#))
+}
+
 async fn update_rates_every_hour() {
     let conf : MyConfig = confy::load_path(CONFIG_PATH).unwrap();
     loop {
@@ -80,6 +87,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .service(get_all_currencies)
             .service(convert)
+            .service(update)
             .app_data(web::JsonConfig::default().error_handler(|err, _req| {
                           error::InternalError::from_response(
                                   "",

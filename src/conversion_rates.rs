@@ -3,32 +3,33 @@ use std::ops::Not;
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
+
 pub type Currency = f64;
 pub type CurrencyType = String;
 pub type ExchangeRate = f64;
 pub type Rates = std::collections::hash_map::HashMap<CurrencyType, ExchangeRate>;
 
-
+#[repr(C)]
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ExchangeRates {
     pub base: CurrencyType,
     pub rates: Rates,
 }
 
+#[repr(C)]
 #[derive(Debug, Deserialize)]
 pub struct ConversionRequest {
     pub from: CurrencyType,
     pub to: CurrencyType,
     pub sum: Currency,
 }
-
+#[repr(C)]
 #[derive(Serialize)]
 pub struct SuccessfulResponse {
     pub status: bool,
     pub sum: Currency,
 }
-
-
+#[repr(C)]
 #[derive(Serialize)]
 pub struct ErrorResponse {
     pub status: bool,
@@ -56,14 +57,14 @@ impl CurrenciesResponse {
 
 
 impl ErrorResponse {
-    pub fn construct(error: &str) -> ErrorResponse {
+    pub extern fn construct(error: &str) -> ErrorResponse {
         ErrorResponse {
             status: false,
             error: error.to_string(),
         }
     }
 }
-pub fn update_rates_toml(api_key: &str, path_to_toml:  & str) {
+pub extern fn update_rates_toml(api_key: &str, path_to_toml:  & str) {
     let url = "https://openexchangerates.org/api/latest.json";
     let final_url = format!("{}?app_id={}", url, api_key);
     let path_to_toml_for_closure = path_to_toml.to_string().clone();
@@ -74,7 +75,7 @@ pub fn update_rates_toml(api_key: &str, path_to_toml:  & str) {
         // let a = String::from_utf8(data.to_vec());
         let er: serde_json::error::Result<ExchangeRates> = serde_json::from_slice(data);
         if er.is_err() {
-            panic!("{:?}",er);
+            panic!("{:?} \n {:?}",er, data);
             // return Ok(0)
         }
         let mut er = er.unwrap();
@@ -92,11 +93,11 @@ impl ExchangeRates {
     // pub fn get_all_currencies(&self) -> Box<[CurrencyType]> {
     //     self.rates.into_keys().collect()
     // }
-    pub fn check_if_currency_exists(&self, c: CurrencyType) -> bool {
+    pub extern fn check_if_currency_exists(&self, c: CurrencyType) -> bool {
         self.base.eq(&c) || self.rates.contains_key(&c)
     }
 
-    pub fn convert(&self, r: ConversionRequest) -> Response {
+    pub extern fn convert(&self, r: ConversionRequest) -> Response {
         if self.check_if_currency_exists(r.from.clone()).not() {
             let error = format!("Wrong currency provided {}", r.from);
             return Response::Err(ErrorResponse::construct(error.as_str()));
